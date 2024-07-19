@@ -1,0 +1,42 @@
+[
+    {
+        "company": "Google",
+        "job_title": "Software Engineer",
+        "job_sector": "Technology",
+        "job_type": "Full-time",
+        "salary": "100,000-150,000",
+        "description": "Develop and maintain software applications."
+    },
+    {
+        "company": "Amazon",
+        "job_title": "Data Scientist",
+        "job_sector": "Technology",
+        "job_type": "Full-time",
+        "salary": "120,000-180,000",
+        "description": "Collect and analyze data to improve business decisions."
+    },
+    {
+        "company": "Microsoft",
+        "job_title": "Product Manager",
+        "job_sector": "Technology",
+        "job_type": "Full-time",
+        "salary": "110,000-160,000",
+        "description": "Develop and launch new products."
+    },
+    {
+        "company": "Apple",
+        "job_title": "Hardware Engineer",
+        "job_sector": "Technology",
+        "job_type": "Full-time",
+        "salary": "130,000-190,000",
+        "description": "Design and develop hardware products."
+    },
+    {
+        "company": "Tesla",
+        "job_title": "Mechanical Engineer",
+        "job_sector": "Automotive",
+        "job_type": "Full-time",
+        "salary": "100,000-150,000",
+        "description": "Design and develop mechanical systems."
+    }
+]

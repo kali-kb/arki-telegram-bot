@@ -1,0 +1,18 @@
+[
+    {
+        "applicant_name": "Kaleb",
+        "location": "Hawassa",
+        "profession": "rails developer",
+        "experience": "5 years",
+        "cover_letter": "I can do this job please hire me",
+        "username": "@kbmati9"
+    },
+    {
+        "applicant_name": "John doe",
+        "location": "Addis Ababa",
+        "profession": "full stack developer",
+        "experience": "5 years",
+        "cover_letter": "I can do this job please hire me",
+        "username": "@kalebmati9"
+    }
+]
