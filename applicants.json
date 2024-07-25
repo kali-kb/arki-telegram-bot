@@ -14,5 +14,118 @@
         "experience": "5 years",
         "cover_letter": "I can do this job please hire me",
         "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Jane Doe",
+        "location": "Dire Dawa",
+        "profession": "Software Engineer",
+        "experience": "3 years",
+        "cover_letter": "I am a highly motivated and skilled software engineer with 3 years of experience.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "David Smith",
+        "location": "Bahir Dar",
+        "profession": "Web Developer",
+        "experience": "4 years",
+        "cover_letter": "I am a passionate web developer with 4 years of experience in building responsive and user-friendly websites.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Emily Jones",
+        "location": "Mekelle",
+        "profession": "Data Analyst",
+        "experience": "2 years",
+        "cover_letter": "I am a data analyst with 2 years of experience in collecting, analyzing, and interpreting data.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Michael Brown",
+        "location": "Gonder",
+        "profession": "Mobile App Developer",
+        "experience": "5 years",
+        "cover_letter": "I am a skilled mobile app developer with 5 years of experience in developing cross-platform applications.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Sarah Wilson",
+        "location": "Jimma",
+        "profession": "UI/UX Designer",
+        "experience": "3 years",
+        "cover_letter": "I am a UI/UX designer with 3 years of experience in creating user-centered designs.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Christopher Garcia",
+        "location": "Harar",
+        "profession": "DevOps Engineer",
+        "experience": "4 years",
+        "cover_letter": "I am a DevOps engineer with 4 years of experience in automating and managing IT infrastructure.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Ashley Rodriguez",
+        "location": "Adama",
+        "profession": "QA Tester",
+        "experience": "2 years",
+        "cover_letter": "I am a QA tester with 2 years of experience in identifying and reporting software defects.",
+        "username": "@kalebmati9"
+    },
+    
+    {
+        "applicant_name": "Rodriguez",
+        "location": "Adama",
+        "profession": "QA Tester",
+        "experience": "2 years",
+        "cover_letter": "I am a QA tester with 2 years of experience in identifying and reporting software defects.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Daniel Williams",
+        "location": "Awassa",
+        "profession": "Software Engineer",
+        "experience": "6 years",
+        "cover_letter": "I am a highly skilled software engineer with 6 years of experience in developing and maintaining software applications.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Jessica Davis",
+        "location": "Bahir Dar",
+        "profession": "Web Developer",
+        "experience": "3 years",
+        "cover_letter": "I am a passionate web developer with 3 years of experience in building responsive and user-friendly websites.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Matthew Miller",
+        "location": "Dire Dawa",
+        "profession": "Data Analyst",
+        "experience": "4 years",
+        "cover_letter": "I am a data analyst with 4 years of experience in collecting, analyzing, and interpreting data.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Jennifer Wilson",
+        "location": "Gonder",
+        "profession": "Mobile App Developer",
+        "experience": "5 years",
+        "cover_letter": "I am a skilled mobile app developer with 5 years of experience in developing cross-platform applications.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Ryan Garcia",
+        "location": "Harar",
+        "profession": "UI/UX Designer",
+        "experience": "2 years",
+        "cover_letter": "I am a UI/UX designer with 2 years of experience in creating user-centered designs.",
+        "username": "@kalebmati9"
+    },
+    {
+        "applicant_name": "Amanda Rodriguez",
+        "location": "Jimma",
+        "profession": "DevOps Engineer",
+        "experience": "4 years",
+        "cover_letter": "I am a DevOps engineer with 4 years of experience in automating and managing IT infrastructure.",
+        "username": "@kalebmati9"
     }
 ]
