@@ -1,6 +1,6 @@
 import os
 from warnings import filterwarnings
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InlineQuery, InlineQueryResultArticle, ReplyKeyboardMarkup, KeyboardButton, InputTextMessageContent, CallbackQuery
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InlineQuery, InlineQueryResultArticle, ReplyKeyboardMarkup, KeyboardButton, InputTextMessageContent, CallbackQuery, ReplyKeyboardRemove
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, InlineQueryHandler, ContextTypes, MessageHandler, ConversationHandler, filters
 from telegram.warnings import PTBUserWarning
 from dotenv import load_dotenv
@@ -21,12 +21,12 @@ with open('mock-server/inlinequery_results.json', 'r') as f:
     search_results = json.load(f)
 
 # Enable logging
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
+# logging.basicConfig(
+#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#     level=logging.INFO
+# )
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -82,6 +82,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     msg = update.message.text
     valid_messages = ["Search a job", "Saved jobs", "Invite", "Guides"]
+
     # if msg not in valid_messages:
     #     await update.message.reply_text(text="I didn't get that")
     #     return
@@ -89,7 +90,7 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     if msg == "Search a job":
         search_options = [
             [InlineKeyboardButton(text="Simple Search(Inline)", switch_inline_query_current_chat="")],
-            [InlineKeyboardButton(text="Advanced Search", callback_data="0")]
+            # [InlineKeyboardButton(text="Advanced Search", callback_data="0")]
         ]
         reply_message = "Choose a way of searching that is convenient to you\n\n<b>Simple Search</b>: <i>Uses inline query</i>\n\n<b>Advanced Search</b>: <i>Uses web app</i>"
         await update.message.reply_text(
@@ -144,12 +145,12 @@ async def job_search_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 description=f"{result['company_name']}\n{result['location']}",
                 input_message_content=InputTextMessageContent(
                     message_text=f"<b>Job Title</b>: {result['job_title']}\n<b>Company</b>: {result['company_name']}\n<b>Location</b>: {result['location']}",
-                    parse_mode="HTML"
+                    parse_mode="HTML",
                 ),
                 reply_markup=InlineKeyboardMarkup(
                     [
                         # [InlineKeyboardButton(text="Apply", url=result["apply_link"])]
-                        [InlineKeyboardButton(text="Apply", callback_data="apply_btn")]
+                        [InlineKeyboardButton(text="Apply", callback_data="apply_inline_btn")]
                     ]
                 )
             )
@@ -159,15 +160,30 @@ async def job_search_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 async def callback_query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
-
-    if query.data == "apply_btn":
-        # await query.answer(text="hello") this should be used for status message
-        print("executed 1")
+    
+    print("cd:", query.data)
+    #this implementation makes the bot quit inline context and return to regular chat
+    if query.data == "apply_inline_btn" or query.data == "apply_btn":
         await query.answer()
-        await context.bot.send_message(chat_id=query.from_user.id, text="Starting application process...")
-        await context.bot.send_message(chat_id=query.from_user.id, text="what is your name? send full name")
-        # await query.message.reply_text("Starting application process...")
-        # await query.message.reply_text("what is your name? send full name")
+        print("Hello")
+        await context.bot.send_message(
+            chat_id=query.from_user.id,
+            text="Let's continue the application process in our private chat. Please click the button below to start.",
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("Start Application", callback_data="start_application")
+            ]])
+        )
+
+    elif query.data == "start_application":
+        await query.answer()
+        print("executing")
+        if "form_data" in context.user_data:
+            del context.user_data["form_data"]
+            print("exists")
+            await context.bot.send_message(chat_id=query.from_user.id, text="What is your name? Send full, or use /cancel to cancel application process", reply_markup=ReplyKeyboardRemove())
+        else:
+            print("doesnt exist")
+            await context.bot.send_message(chat_id=query.from_user.id, text="What is your name? Send full name, or use /cancel to cancel application process", reply_markup=ReplyKeyboardRemove())
         return FULL_NAME
 
 
@@ -185,6 +201,7 @@ async def callback_query_handler(update: Update, context: ContextTypes.DEFAULT_T
         context.user_data["previous_message"] = {"previous_text": update.callback_query.message.text, "previous_reply_markup": update.callback_query.message.reply_markup}
 
     if query.data == "yes_btn":
+        await query.answer(text="Your saved jobs has been removed")
         await update.callback_query.delete_message()
 
     if query.data == "no_btn":
@@ -199,47 +216,46 @@ async def callback_query_handler(update: Update, context: ContextTypes.DEFAULT_T
         # await update.callback_query.message.edit_text(text="form saved successfully")
         await update.callback_query.delete_message()
         await update.callback_query.message.reply_text(text="form saved successfully")
-        context.user_data.clear()
-
+        del context.user_data["form_data"]
     if query.data == "cancel_form":
         await update.callback_query.delete_message()
-        context.user_data.clear()
+        del context.user_data["form_data"]
 
 
 #################--FORM--#####################
-#get previous data using update.message.text save it to next for using context.user_data[field]
 
-# async def form_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-#     message = update  # No need for conditional check, update is already a Message
-#     await message.reply_text(text="what is your name? send full name")
-#     return FULL_NAME
 
 async def ask_cv(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    print("executed")
-    context.user_data["full_name"] = update.message.text
-    await update.message.reply_text(text="Submit your CV, the document must be in .pdf format")
+    print(context.user_data)
+    context.user_data["form_data"] = {}
+    context.user_data["form_data"].update({"full_name": update.message.text})
+    await update.message.reply_text(text="Submit your CV, the document must be in .pdf format, or use /cancel to cancel application process", reply_markup=ReplyKeyboardRemove())
     return CV
 
 async def ask_cover_letter(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    context.user_data["cv"] = update.message.document #do an s3 upload as well
-    await update.message.reply_text(text="Submit your cover letter")
+    print(context.user_data["form_data"])
+    context.user_data["form_data"].update({"cv": update.message.document}) #do an s3 upload as well
+    await update.message.reply_text(text="Submit your cover letter", reply_markup=ReplyKeyboardRemove())
     return COVER_LETTER
 
 async def incorrect_format_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(text="Incorrect format the document should be: pdf")
 
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Application process cancelled. You can start over anytime.")
+    return ConversationHandler.END
 async def form_done(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    context.user_data["cover_letter"] = update.message.text
+    context.user_data["form_data"].update({"cover_letter": update.message.text})
     print(context.user_data)
     buttons = [
         [InlineKeyboardButton("Save Form", callback_data="save_form")],
         [InlineKeyboardButton("Cancel", callback_data="cancel_form")]
     ]
     form_data = (
-        f"<b>Full Name</b>: {context.user_data['full_name']}\n"
-        f"<b>Cover Letter</b>: {context.user_data['cover_letter']}"
+        f"<b>Full Name</b>: {context.user_data['form_data']['full_name']}\n"
+        f"<b>Cover Letter</b>: {context.user_data['form_data']['cover_letter']}"
     )
-    doc = context.user_data['cv']
+    doc = context.user_data['form_data']['cv']
     await update.message.reply_document(document=doc , caption=form_data, reply_markup=InlineKeyboardMarkup(buttons), parse_mode="HTML")
     return ConversationHandler.END
 
@@ -259,7 +275,7 @@ conv_handler = ConversationHandler(
         ],
         COVER_LETTER: [MessageHandler(filters.TEXT, form_done)]
     },
-    fallbacks=[]
+    fallbacks=[CommandHandler('cancel', cancel)]
 )
 app.add_handler(conv_handler)
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), message_handler))
