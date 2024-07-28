@@ -1,0 +1,37 @@
+[
+    {
+      "job_id": 1,
+      "job_title": "Software Engineer",
+      "company_image": "https://globedocket.com/files/Asset%202@300x.png",
+      "company_name": "Globedocket",
+      "location": "Addis Ababa, Ethiopia"
+    },
+    {
+      "job_id": 2,
+      "job_title": "Data Analyst",
+      "company_image": "https://safaricom.et/images/siteimages/logo-lg.png",
+      "company_name": "Safaricom Ethiopia",
+      "location": "Addis Ababa, Ethiopia"
+    },
+    {
+      "job_id": 3,
+      "job_title": "Product Manager",
+      "company_image": "https://d14e7ksvv6cssc.cloudfront.net/9d164051-5700-44ef-89f1-2e842ab250d5/images/linkup.webp?07a3f718ab6f14fe25cde3c3e0cca2f8",
+      "company_name": "LinkUp",
+      "location": "Hawassa"
+    },
+    {
+      "job_id": 4,
+      "job_title": "Marketing Lead",
+      "company_image": "https://d14e7ksvv6cssc.cloudfront.net/9d164051-5700-44ef-89f1-2e842ab250d5/images/wegenfund.webp?8203022afebac179603305d459e41dbe",
+      "company_name": "Wegenfund",
+      "location": "Adama"
+    },
+    {
+      "job_id": 5,
+      "job_title": "Marketing Specialist",
+      "company_image": "https://www.example.com/logo.png",
+      "company_name": "Example Company",
+      "location": "London, UK"
+    }
+]

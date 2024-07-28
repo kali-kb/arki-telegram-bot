@@ -1,0 +1,32 @@
+[ 
+   {
+        "job_id": "1",
+        "title": "Software Engineer",
+        "company": "Google",
+        "location": "Mountain View, CA",
+        "description": "Develop and maintain software applications for Google products.",
+        "salary": "150,000 - 200,000",
+        "link": "https://careers.google.com/jobs/results/",
+        "tg_user_id": "5395225327"
+    },
+    {
+        "job_id": "2",
+        "title": "Data Scientist",
+        "company": "Amazon",
+        "location": "Seattle, WA",
+        "description": "Analyze large datasets to identify trends and insights.",
+        "salary": "120,000 - 180,000",
+        "link": "https://www.amazon.jobs/en/",
+        "tg_user_id": "5478889351"
+    },
+    {
+        "job_id": "3",
+        "title": "Product Manager",
+        "company": "Facebook",
+        "location": "Menlo Park, CA",
+        "description": "Define and launch new products for Facebook.",
+        "salary": "130,000 - 190,000",
+        "link": "https://careers.facebook.com/jobs/",
+        "tg_user_id": "5478889351"
+    }
+]
