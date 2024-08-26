@@ -1,5 +1,5 @@
 .env
 job_application_form.py
-.*pyc
+*.pyc
 .vscode
 /package
