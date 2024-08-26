@@ -453,7 +453,7 @@ print("job seeker bot running...")
 
 ########## Webhook ###############
 
-@webhook_api.post("/test")
+@webhook_api.get("/test")
 async def test():
     return "Hello World"
 
