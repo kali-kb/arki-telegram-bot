@@ -8,6 +8,8 @@
     # pkgs.go
     pkgs.python311
     pkgs.python311Packages.pip
+    pkgs.ngrok
+    # pkgs.flyctl
     # pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
   ];

@@ -1,14 +1,14 @@
 from os import getenv
 from dotenv import load_dotenv
 import requests
-
+import boto3
 
 load_dotenv()
 
 
 backend_url = getenv('BACKEND_URL')
-
-
+AWS_SECRET_ACCESS_KEY = getenv('AWS_SECRET_ACCESS_KEY')
+AWS_ACCESS_KEY_ID = getenv('AWS_ACCESS_KEY_ID')
 def get_user(telegram_id):
     query_string = f"?by_telegram=true&tg_id={telegram_id}"
     url = f"{backend_url}/users{query_string}"
@@ -169,7 +169,7 @@ def list_jobs(user_id):
         data = response.json()
         return data
 
-
+# print(list_jobs(1))
 def delete_job(user_id, job_id):
     response = requests.delete(f"{backend_url}/users/{user_id}/jobs/{job_id}")
     if response.status_code == 204:
@@ -177,6 +177,7 @@ def delete_job(user_id, job_id):
     else:
         return {"status": "error"}
 
+# print(delete_job(1, 2))
 
 def list_applicants(user_id, job_id):
     response = requests.get(f"{backend_url}/users/{user_id}/jobs/{job_id}/job_applications")
@@ -192,3 +193,17 @@ def remove_applicant(user_id, job_id, job_application_id):
     else:
         return {"status": "error"}
 
+
+def create_feedback(payload):
+    response = requests.post(f"{backend_url}/feedbacks", json=payload)
+    if response.status_code == 201:
+        data = response.json()
+        return data
+
+def upload(file_name, file_content):
+    s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY, region_name='eu-north-1')
+    bucket_name = 'arki-aws-bucket'
+    s3_key = f'cvs/{file_name}'
+    s3_client.put_object(Bucket=bucket_name, Key=s3_key, Body=file_content, ContentType="application/pdf")
+    document_url = f'https://{bucket_name}.s3.amazonaws.com/{s3_key}'
+    return document_url

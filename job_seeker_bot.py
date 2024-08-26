@@ -1,33 +1,38 @@
-import os
+from fastapi import FastAPI, Request
 from warnings import filterwarnings
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InlineQuery, InlineQueryResultArticle, ReplyKeyboardMarkup, KeyboardButton, InputTextMessageContent, CallbackQuery, ReplyKeyboardRemove
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, InlineQueryHandler, ContextTypes, MessageHandler, ConversationHandler, filters
 from telegram.warnings import PTBUserWarning
 from dotenv import load_dotenv
 from datetime import datetime
+import boto3
 import aiohttp
 from io import BytesIO
+import uvicorn
 import urllib.parse
 import logging
 import json
+import os
 import api
 
 
 filterwarnings(action="ignore", message=r".*CallbackQueryHandler", category=PTBUserWarning)
 
 
+webhook_api = FastAPI()
+
 
 # with open('saved_jobs.json', 'r') as f:
 #     jobs = json.load(f)
 
 
-# Enable logging
-# logging.basicConfig(
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#     level=logging.INFO
-# )
+#Enable logging
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
 
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -345,12 +350,16 @@ async def callback_query_handler(update: Update, context: ContextTypes.DEFAULT_T
 
     if query.data == "save_form":
         # await update.callback_query.message.edit_text(text="form saved successfully")
-        print("id: ", context.user_data["application_for_job"])
+        document = context.user_data["form_data"]["cv"]
+        # Get the file object from the bot using the document's file_id
+        file = await context.bot.get_file(document.file_id)
+        file_content = await file.download_as_bytearray()
+        document_url = api.upload(file_name=document.file_name, file_content=file_content)
         job_application_data = {
             "job_id": context.user_data["application_for_job"],
             "user_id": context.user_data["current_user"]["user_id"],
             "cover_letter": context.user_data["form_data"]["cover_letter"],
-            "cv_document_url": context.user_data["form_data"]["cv"],
+            "cv_document_url": document_url,
             "contact": f"https://t.me/{update.callback_query.from_user.username}",
         }
         response = api.apply_to_job(job_application_data)
@@ -383,13 +392,8 @@ async def ask_cv(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def ask_cover_letter(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # print(context.user_data["form_data"])
-    # print(update.message.document)
-    file_id = update.message.document.file_id
-    file = await context.bot.get_file(file_id)
-    file_url = file.file_path
-    # print(file_url)
-    # context.user_data["form_data"].update({"cv": update.message.document}) #do an s3 upload as well
-    context.user_data["form_data"].update({"cv": file_url}) #do an s3 upload as well
+    print(update.message.document)
+    context.user_data["form_data"].update({"cv": update.message.document}) #do an s3 upload as well
     await update.message.reply_text(text="Write your cover letter, it should be maximum 1000 character", reply_markup=ReplyKeyboardRemove())
     return COVER_LETTER
 
@@ -410,25 +414,19 @@ async def form_done(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         f"<b>Full Name</b>: {context.user_data['form_data']['full_name']}\n"
         f"<b>Cover Letter</b>: \n\t{context.user_data['form_data']['cover_letter']}"
     )
-    doc_url = context.user_data['form_data']['cv']
-    async with aiohttp.ClientSession() as session:
-        async with session.get(doc_url) as response:
-            if response.status == 200:
-                file_content = await response.read()
-                file_obj = BytesIO(file_content)
-                file_obj.name = f"{context.user_data['form_data']['full_name'].replace(' ', '_').lower()}_cv.pdf"  # Set a default name for the file
-                await update.message.reply_document(
-                    document=file_obj,
-                    caption=form_data,
-                    reply_markup=InlineKeyboardMarkup(buttons),
-                    parse_mode="HTML"
-                )
-            else:
-                await update.message.reply_text("Failed to retrieve the document.")
+    doc = context.user_data['form_data']['cv']
+    await update.message.reply_document(
+        document=doc,
+        caption=form_data,
+        reply_markup=InlineKeyboardMarkup(buttons),
+        parse_mode="HTML"
+    )
     # await update.message.reply_document(document=doc , caption=form_data, reply_markup=InlineKeyboardMarkup(buttons), parse_mode="HTML")
     return ConversationHandler.END
 
 #################--FORM--#####################
+
+
 
 app.add_handler(CommandHandler("start", start))
 conv_handler = ConversationHandler(
@@ -451,4 +449,27 @@ app.add_handler(MessageHandler(filters.COMMAND, unknown_command))
 app.add_handler(CallbackQueryHandler(callback_query_handler))
 print("job seeker bot running...")
 
-app.run_polling()
+# app.run_polling()
+
+########## Webhook ###############
+
+@webhook_api.post("/test")
+async def test():
+    return "Hello World"
+
+@webhook_api.on_event("startup")
+async def startup_event():
+    await app.initialize()
+
+@webhook_api.post("/webhook")
+async def run_bot(request: Request):
+    data = await request.json()
+    update = Update.de_json(data, app.bot)
+    await app.process_update(update)
+    return {"ok": True}
+####################################
+
+
+
+# if __name__ == "__main__":
+#     uvicorn.run("job_seeker_bot:webhook_api", host="0.0.0.0", port=8000, reload=True)
